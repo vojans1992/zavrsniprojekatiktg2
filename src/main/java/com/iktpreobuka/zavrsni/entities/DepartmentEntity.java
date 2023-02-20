@@ -27,7 +27,7 @@ public class DepartmentEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "department_id")
-	private Integer name;
+	private Integer id;
 	@Column(name = "year", nullable = false)
 	@NotNull(message = "Department must be in a school year.")
 	private Year year;
@@ -44,19 +44,19 @@ public class DepartmentEntity {
 		// TODO Auto-generated constructor stub
 	}
 
-	public DepartmentEntity(Integer name, Year year, TeacherEntity teacherEntity) {
+	public DepartmentEntity(Integer id, Year year, TeacherEntity teacherEntity) {
 		super();
-		this.name = name;
+		this.id = id;
 		this.year = year;
 		this.homeroomTeacher = teacherEntity;
 	}
 
-	public Integer getName() {
-		return name;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setName(Integer name) {
-		this.name = name;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public Year getYear() {

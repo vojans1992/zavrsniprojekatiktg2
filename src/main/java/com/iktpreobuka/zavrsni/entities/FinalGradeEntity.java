@@ -2,6 +2,7 @@ package com.iktpreobuka.zavrsni.entities;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -9,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -19,22 +21,27 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
 public class FinalGradeEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@EmbeddedId
 	@Column(name = "final_grade_id")
-	private Integer id;
+	private FinalGradeKey id = new FinalGradeKey();
+	
 	@Column(name = "value", columnDefinition = "integer default 0")
 	private Integer value;
+	
 	@NotNull(message = "Final grade must be connected to a semester.")
 	@Column(name = "semester", nullable = false)
 	private Semester semester;
+	
 	@NotNull(message = "Final grade must be connected to a pupil.")
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn (name= "pupil", nullable = false)
+	@MapsId("pupilId")
+	@JoinColumn (name= "pupil_id", nullable = false)
 	private PupilEntity pupil;
+	
 	@NotNull(message = "Final grade must be connected to a subject.")
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinColumn (name= "subject", nullable = false)
+	@MapsId("subjectId")
+	@JoinColumn (name= "subject_id", nullable = false)
 	private SubjectEntity subject;
 	
 	public FinalGradeEntity() {
@@ -42,21 +49,11 @@ public class FinalGradeEntity {
 		// TODO Auto-generated constructor stub
 	}
 
-	public FinalGradeEntity(Integer id, Integer value, @NotNull Semester semester, @NotNull PupilEntity pupil,
-			@NotNull SubjectEntity subject) {
-		super();
-		this.id = id;
-		this.value = value;
-		this.semester = semester;
-		this.pupil = pupil;
-		this.subject = subject;
-	}
-
-	public Integer getId() {
+	public FinalGradeKey getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(FinalGradeKey id) {
 		this.id = id;
 	}
 

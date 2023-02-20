@@ -1,6 +1,7 @@
 package com.iktpreobuka.zavrsni.entities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -19,9 +20,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
 public class PupilEntity extends UserEntity{
-	@NotNull(message = "Pupil must belong to a school year.")
-	@Column(name = "year", nullable = false)
-	private Year year;
 	@NotNull(message = "Pupil must belong to a department.")
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn (name= "department", nullable = false)
@@ -48,23 +46,15 @@ public class PupilEntity extends UserEntity{
 		// TODO Auto-generated constructor stub
 	}
 
-	public PupilEntity(@NotNull Year year, @NotNull DepartmentEntity department, @NotNull ParentEntity parent,
+	public PupilEntity( @NotNull DepartmentEntity department, @NotNull ParentEntity parent,
 			List<GradeEntity> grades, List<FinalGradeEntity> finalGrades) {
 		super();
-		this.year = year;
 		this.department = department;
 		this.parent = parent;
 		this.grades = grades;
 		this.finalGrades = finalGrades;
 	}
 
-	public Year getYear() {
-		return year;
-	}
-
-	public void setYear(Year year) {
-		this.year = year;
-	}
 
 	public DepartmentEntity getDepartment() {
 		return department;
@@ -97,9 +87,5 @@ public class PupilEntity extends UserEntity{
 	public void setFinalGrades(List<FinalGradeEntity> finalGrades) {
 		this.finalGrades = finalGrades;
 	}
-	
-	
-	
-	
 	
 }

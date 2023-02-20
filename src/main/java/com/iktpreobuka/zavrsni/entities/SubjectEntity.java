@@ -46,11 +46,7 @@ public class SubjectEntity {
 	@JsonIgnore
 	@OneToMany(mappedBy = "subject", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private List<FinalGradeEntity> finalGrades = new ArrayList<FinalGradeEntity>();
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-	@JoinTable(
-	  name = "teacher_subject", 
-	  joinColumns = {@JoinColumn(name = "subject_id", nullable = false, updatable = false)}, 
-	  inverseJoinColumns = {@JoinColumn(name = "teacher_id", nullable = false, updatable = false)})
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "subjects")
 	private Set<TeacherEntity> teachers = new HashSet<TeacherEntity>();
 	
 	public SubjectEntity() {

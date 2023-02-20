@@ -30,9 +30,8 @@ public class UserEntity {
 	@Column(name = "user_id")
 	private Integer id;
 	
-	@NotNull(message = "Email must be provided.")
-	@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)@"+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)(\\.[A-Za-z]{2,})$",
-	message="Email is not valid.")
+	@NotNull(message = "Email must be provided")
+	@Pattern(regexp = "^((?!\\.)[\\w-_.]*[^.])(@\\w+)(\\.\\w+(\\.\\w+)?[^.\\W])$", message="Dto email is not valid.")
 	@Column(name = "email", nullable = false, unique = true)
 	private String email;
 	

@@ -6,6 +6,7 @@ import javax.validation.constraints.Size;
 
 public class ParentDto {
 
+	private Integer id;
 	@NotNull(message = "First name must be provided")
 	@Size(min = 2, max = 30, message =  "First name must be between 2 and 30 characters long.")
 	private String name;
@@ -30,6 +31,14 @@ public class ParentDto {
 		// TODO Auto-generated constructor stub
 	}
 	
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	public String getName() {
 		return name;
 	}

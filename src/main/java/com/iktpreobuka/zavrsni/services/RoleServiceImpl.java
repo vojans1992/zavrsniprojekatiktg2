@@ -1,5 +1,7 @@
 package com.iktpreobuka.zavrsni.services;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +16,13 @@ public class RoleServiceImpl implements RoleService{
 	
 	@Override
 	public RoleEntity findById(Integer id) {
-		// TODO Auto-generated method stub
-		return roleRepository.findById(id).get();
+		RoleEntity entity;
+		try {
+			entity = roleRepository.findById(id).get();
+			return entity;
+		} catch (NoSuchElementException e) {
+			throw new NoSuchElementException("Role with id: " + id + " does not exist.");
+		}
 	}
 
 	

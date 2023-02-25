@@ -4,8 +4,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class PupilDto {
 
+	private Integer id;
 	@NotNull(message = "First name must be provided")
 	@Size(min = 2, max = 30, message =  "First name must be between 2 and 30 characters long.")
 	private String name;
@@ -18,9 +21,11 @@ public class PupilDto {
 	@NotNull(message = "Username must be provided.")
 	@Size(min=5, max=15, message = "Username must be between {min} and {max} characters long.")
 	private String username;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@NotNull(message = "Password must be provided.")
 	@Size(min=5, max=10, message = "Password must be between {min} and {max} characters long.")
 	private String password;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@NotNull(message = "Password must be provided.")
 	@Size(min=5, max=10, message = "Confirmed Password must be between {min} and {max} characters long.")
 	private String confirmedPassword;
@@ -31,6 +36,14 @@ public class PupilDto {
 	public PupilDto() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getName() {

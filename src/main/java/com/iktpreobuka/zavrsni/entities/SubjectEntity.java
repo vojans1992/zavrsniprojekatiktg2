@@ -46,6 +46,7 @@ public class SubjectEntity {
 	@JsonIgnore
 	@OneToMany(mappedBy = "subject", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private List<FinalGradeEntity> finalGrades = new ArrayList<FinalGradeEntity>();
+	@JsonIgnore
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "subjects")
 	private Set<TeacherEntity> teachers = new HashSet<TeacherEntity>();
 	

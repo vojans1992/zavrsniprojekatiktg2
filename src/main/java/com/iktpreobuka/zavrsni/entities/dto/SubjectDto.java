@@ -7,6 +7,7 @@ import com.iktpreobuka.zavrsni.entities.Year;
 
 public class SubjectDto {
 
+	private Integer id;
 	@NotNull(message = "Subject must have a name.")
 	private String name;
 	@NotNull(message = "Subject must have weekly classload.")
@@ -18,6 +19,17 @@ public class SubjectDto {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+
+	
+	public Integer getId() {
+		return id;
+	}
+
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 
 	public String getName() {
 		return name;

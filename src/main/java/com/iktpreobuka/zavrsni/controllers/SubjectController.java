@@ -21,7 +21,6 @@ public class SubjectController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> addSubject(@Validated @RequestBody SubjectDto newSubject){
-		subjectService.saveSubjectDtoAsSubjectEntity(newSubject);
-		return new ResponseEntity<>(newSubject, HttpStatus.OK);
+		return new ResponseEntity<>(subjectService.saveSubjectDtoAsSubjectEntity(newSubject), HttpStatus.OK);
 	}
 }

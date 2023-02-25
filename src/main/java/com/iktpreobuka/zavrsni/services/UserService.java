@@ -14,7 +14,6 @@ public interface UserService {
 	UserEntity saveUserDtoAsUserEntity(UserDto userDto);
 	ParentEntity saveParentDtoAsParentEntity(ParentDto parentDto);
 	TeacherEntity saveTeacherDtoAsTeacherEntity(TeacherDto teacherDto);
-	TeacherEntity findTeacherById(Integer id);
-	PupilEntity findPupilById(Integer id);
+	UserEntity findUserById(Integer id);
 	String addSubjectToTeacher(int subjectId, int teacherId);
 }

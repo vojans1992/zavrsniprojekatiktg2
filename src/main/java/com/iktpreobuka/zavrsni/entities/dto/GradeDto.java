@@ -8,6 +8,7 @@ import com.iktpreobuka.zavrsni.entities.Semester;
 
 public class GradeDto {
 
+	private Integer id;
 	@Min(1)
 	@Max(5)
 	@NotNull
@@ -28,6 +29,14 @@ public class GradeDto {
 	public GradeDto() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public Integer getValue() {

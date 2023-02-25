@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties({ "handler", "hibernateLazyInitializer" })
 public class TeacherEntity extends UserEntity {
 
+	@JsonIgnore
 	@OneToOne(mappedBy = "homeroomTeacher", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	private DepartmentEntity department;
 

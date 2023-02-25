@@ -6,5 +6,5 @@ import com.iktpreobuka.zavrsni.entities.dto.FinalGradeDto;
 public interface FinalGradeService {
 
 	FinalGradeEntity findById(Integer id);
-	FinalGradeEntity saveFinalGradeDtoAsFinalGradeEntity(FinalGradeDto finalGradeDto);
+	String saveFinalGradeDtoAsFinalGradeEntity(FinalGradeDto finalGradeDto);
 }

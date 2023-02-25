@@ -9,6 +9,7 @@ import com.iktpreobuka.zavrsni.entities.RoleEntity;
 
 public class UserDto {
 
+	private Integer id;
 	@NotNull(message = "First name must be provided")
 	@Size(min = 2, max = 30, message =  "First name must be between 2 and 30 characters long.")
 	private String name;
@@ -34,6 +35,20 @@ public class UserDto {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+
+	
+	
+	public Integer getId() {
+		return id;
+	}
+
+
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+
 
 	public String getName() {
 		return name;

@@ -1,5 +1,7 @@
 package com.iktpreobuka.zavrsni.services;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,18 +16,27 @@ public class SubjectServiceImpl implements SubjectService {
 	
 	@Override
 	public SubjectEntity saveSubjectDtoAsSubjectEntity(SubjectDto subjectDto) {
-		SubjectEntity subjectEntity = new SubjectEntity();
+		SubjectEntity subjectEntity;
+		if(subjectDto.getId() != null) {
+			subjectEntity = subjectRepository.findById(subjectDto.getId()).get();
+		}else {
+			subjectEntity = new SubjectEntity();
+		}
 		subjectEntity.setClassLoad(subjectDto.getClassLoad());
 		subjectEntity.setName(subjectDto.getName());
 		subjectEntity.setYear(subjectDto.getYear());
-		subjectRepository.save(subjectEntity);
-		return subjectEntity;
+		return subjectRepository.save(subjectEntity);
 	}
 
 	@Override
 	public SubjectEntity findById(Integer id) {
-		// TODO Auto-generated method stub
-		return subjectRepository.findById(id).get();
+		SubjectEntity entity;
+		try {
+			entity = subjectRepository.findById(id).get();
+			return entity;
+		} catch (NoSuchElementException e) {
+			throw new NoSuchElementException("Subject with id: " + id + " does not exist.");
+		}
 	}
 
 }

@@ -7,6 +7,7 @@ import com.iktpreobuka.zavrsni.entities.Year;
 
 public class DepartmentDto {
 	
+	private Integer id;
 	private Year year;
 	@NotNull(message = "Homeroom teacher id must be provided")
 	private Integer homeroomTeacherId;
@@ -14,6 +15,14 @@ public class DepartmentDto {
 	public DepartmentDto() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public Year getYear() {

@@ -1,6 +1,7 @@
 package com.iktpreobuka.zavrsni.controllers;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import javax.validation.Valid;
 
@@ -16,6 +17,7 @@ import com.iktpreobuka.zavrsni.entities.GradeEntity;
 import com.iktpreobuka.zavrsni.entities.dto.GradeDto;
 import com.iktpreobuka.zavrsni.repositories.GradeRepository;
 import com.iktpreobuka.zavrsni.services.GradeService;
+import com.iktpreobuka.zavrsni.utils.RESTError;
 
 
 @RestController
@@ -34,7 +36,19 @@ public class GradeController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> addNewGrade(@Valid @RequestBody GradeDto newGrade){
-		gradeService.saveGradeDtoAsGradeEntity(newGrade);
-		return new ResponseEntity<>(newGrade, HttpStatus.OK);
+		GradeEntity grade;
+		try {
+			grade = gradeService.saveGradeDtoAsGradeEntity(newGrade);
+		} catch (ClassCastException e) {
+			return new ResponseEntity<RESTError>(new RESTError(HttpStatus.BAD_REQUEST.value(),
+					e.getMessage()),
+					HttpStatus.BAD_REQUEST);
+		}catch (NoSuchElementException e) {
+			return new ResponseEntity<RESTError>(new RESTError(HttpStatus.NOT_FOUND.value(),
+					e.getMessage()),
+					HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(grade, HttpStatus.OK);
 	}
+	
 }

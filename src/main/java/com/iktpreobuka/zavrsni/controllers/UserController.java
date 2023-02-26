@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.iktpreobuka.zavrsni.entities.ParentEntity;
 import com.iktpreobuka.zavrsni.entities.PupilEntity;
+import com.iktpreobuka.zavrsni.entities.TeacherEntity;
 import com.iktpreobuka.zavrsni.entities.UserEntity;
 import com.iktpreobuka.zavrsni.entities.dto.ParentDto;
 import com.iktpreobuka.zavrsni.entities.dto.PupilDto;
@@ -62,110 +64,69 @@ public class UserController {
 	public ResponseEntity<?> list() {
 		return new ResponseEntity<List<UserEntity>>((List<UserEntity>) userRepository.findAll(), HttpStatus.OK);
 	}
-	
+
 	@RequestMapping("/{id}")
-	public ResponseEntity<?> one(@PathVariable int id){
-		return new ResponseEntity<>(userRepository.findById(id), HttpStatus.OK);
+	public ResponseEntity<?> one(@PathVariable int id) {
+		return new ResponseEntity<>(userService.findUserById(id), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> addNewUser(@Valid @RequestBody UserDto newUser) {
-		userService.saveUserDtoAsUserEntity(newUser);
-		return new ResponseEntity<>(newUser, HttpStatus.OK);
+		return new ResponseEntity<>(userService.saveUserDtoAsUserEntity(newUser), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/pupils", method = RequestMethod.POST)
-	public ResponseEntity<?> addNewUser(@Valid @RequestBody PupilDto newPupil) {
-		PupilEntity pupil;
-		try {
-			pupil = pupilService.savePupilDtoAsPupilEntity(newPupil);
-		} catch (ClassCastException e) {
-			return new ResponseEntity<RESTError>(new RESTError(HttpStatus.BAD_REQUEST.value(),
-					e.getMessage()),
-					HttpStatus.BAD_REQUEST);
-		}catch (NoSuchElementException e) {
-			return new ResponseEntity<RESTError>(new RESTError(HttpStatus.NOT_FOUND.value(),
-					e.getMessage()),
-					HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<>(pupil, HttpStatus.OK);
+	public ResponseEntity<?> addNewPupil(@Valid @RequestBody PupilDto newPupil) {
+		return new ResponseEntity<>(pupilService.savePupilDtoAsPupilEntity(newPupil), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/parents", method = RequestMethod.POST)
 	public ResponseEntity<?> addNewParent(@Valid @RequestBody ParentDto newParent) {
-		ParentEntity parent;
-		try {
-			parent = userService.saveParentDtoAsParentEntity(newParent);
-		} catch (ClassCastException e) {
-			return new ResponseEntity<RESTError>(new RESTError(HttpStatus.BAD_REQUEST.value(),
-					e.getMessage()),
-					HttpStatus.BAD_REQUEST);
-		}catch (NoSuchElementException e) {
-			return new ResponseEntity<RESTError>(new RESTError(HttpStatus.NOT_FOUND.value(),
-					e.getMessage()),
-					HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<>(parent, HttpStatus.OK);
+		return new ResponseEntity<>(userService.saveParentDtoAsParentEntity(newParent), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/teachers", method = RequestMethod.POST)
-	public ResponseEntity<?> addNewUser(@Valid @RequestBody TeacherDto newTeacher) {
-		userService.saveTeacherDtoAsTeacherEntity(newTeacher);
-		return new ResponseEntity<>(newTeacher, HttpStatus.OK);
+	public ResponseEntity<?> addNewTeacher(@Valid @RequestBody TeacherDto newTeacher) {
+		return new ResponseEntity<>(userService.saveTeacherDtoAsTeacherEntity(newTeacher), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateUser(@Valid @RequestBody UserDto newUser, @PathVariable int id) {
-		userService.saveUserDtoAsUserEntity(newUser);
-		return new ResponseEntity<>(newUser, HttpStatus.OK);
+		newUser.setId(id);
+		return addNewUser(newUser);
 	}
 
 	@RequestMapping(value = "/pupils/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<?> updateUser(@Valid @RequestBody PupilDto newPupil, @PathVariable int id) {
-		pupilService.savePupilDtoAsPupilEntity(newPupil);
-		return new ResponseEntity<>(newPupil, HttpStatus.OK);
+	public ResponseEntity<?> updatePupil(@Valid @RequestBody PupilDto newPupil, @PathVariable int id) {
+		newPupil.setId(id);
+		return addNewPupil(newPupil);
 	}
 
 	@RequestMapping(value = "/parents/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<?> updateUser(@Valid @RequestBody ParentDto newParent, @PathVariable int id) {
-		userService.saveParentDtoAsParentEntity(newParent);
-		return new ResponseEntity<>(newParent, HttpStatus.OK);
+	public ResponseEntity<?> updateParent(@Valid @RequestBody ParentDto newParent, @PathVariable int id) {
+		newParent.setId(id);
+		return addNewParent(newParent);
 	}
 
 	@RequestMapping(value = "/teachers/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<?> updateUser(@Valid @RequestBody TeacherDto newTeacher, @PathVariable int id) {
-		userService.saveTeacherDtoAsTeacherEntity(newTeacher);
-		return new ResponseEntity<>(newTeacher, HttpStatus.OK);
+	public ResponseEntity<?> updateTeacher(@Valid @RequestBody TeacherDto newTeacher, @PathVariable int id) {
+		newTeacher.setId(id);
+		return addNewTeacher(newTeacher);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deleteUser(@PathVariable int id) {
-		userRepository.deleteById(id);
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/pupils/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deletePupil(@PathVariable int id) {
-		userRepository.deleteById(id);
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/parents/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deleteParent(@Valid @RequestBody ParentDto newParent, @PathVariable int id) {
-		userService.saveParentDtoAsParentEntity(newParent);
-		return new ResponseEntity<>(newParent, HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/teachers/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deleteTeacher(@Valid @RequestBody TeacherDto newTeacher, @PathVariable int id) {
-		userService.saveTeacherDtoAsTeacherEntity(newTeacher);
-		return new ResponseEntity<>(newTeacher, HttpStatus.OK);
+		return new ResponseEntity<>(userService.deleteById(id), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/teachers/addSubject", method = RequestMethod.POST)
 	public ResponseEntity<?> addSubjectToTeacher(@RequestParam int subjectId, @RequestParam int teacherId) {
-		userService.addSubjectToTeacher(subjectId, teacherId);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(userService.addSubjectToTeacher(subjectId, teacherId), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/teachers/removeSubject", method = RequestMethod.DELETE)
+	public ResponseEntity<?> removeSubjectFromTeacher(@RequestParam int subjectId, @RequestParam int teacherId) {
+		return new ResponseEntity<>(userService.removeSubjectFromTeacher(subjectId, teacherId), HttpStatus.OK);
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -188,20 +149,20 @@ public class UserController {
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-	public String handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
-		return ex.getLocalizedMessage();
-	}
-
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(NoSuchElementException.class)
-	public String handleSQLIntegrityConstraintViolationException(NoSuchElementException ex) {
-		return ex.getLocalizedMessage();
-	}
-
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(ClassCastException.class)
-	public String handleSQLIntegrityConstraintViolationException(ClassCastException ex) {
-		return ex.getLocalizedMessage();
+	public String handleClassCastExceptions(ClassCastException ex) {
+		return ex.getMessage();
+	}
+
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ExceptionHandler(NoSuchElementException.class)
+	public String handleNoSuchElementExceptions(NoSuchElementException ex) {
+		return ex.getMessage();
+	}
+	
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ExceptionHandler(EmptyResultDataAccessException.class)
+	public String handleEmptyResultDataAccessExceptions(EmptyResultDataAccessException ex) {
+		return ex.getMessage();
 	}
 }

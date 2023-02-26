@@ -27,7 +27,7 @@ public class PupilServiceImpl implements PupilService{
 		PupilEntity pupil;
 		if(pupilDto.getId() != null) {
 			try {
-				pupil = (PupilEntity) pupilRepository.findById(pupilDto.getId()).get();
+				pupil = (PupilEntity) findById(pupilDto.getId());
 			} catch (ClassCastException e) {
 				throw new ClassCastException("User with ID: " + pupilDto.getId() + " is not a pupil entity.");
 			} catch (NoSuchElementException e) {

@@ -1,8 +1,12 @@
 package com.iktpreobuka.zavrsni.services;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.NoSuchElementException;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.iktpreobuka.zavrsni.entities.DepartmentEntity;
@@ -54,9 +58,21 @@ public class DepartmentServiceImpl implements DepartmentService{
 		}catch (NoSuchElementException e) {
 			throw new NoSuchElementException(e.getMessage());
 		}
-		
-		
-		return departmentRepostitory.save(departmentEntity);
+		try {
+			return departmentRepostitory.save(departmentEntity);
+		} catch (DataIntegrityViolationException e) {
+			throw new DataIntegrityViolationException(e.getCause().getCause().getMessage());
+		}
+	}
+	
+	@Override
+	public String deleteById(Integer id) {
+		try {
+			departmentRepostitory.deleteById(id);
+			return "Deleted department with ID: " + id;
+		} catch (EmptyResultDataAccessException e) {
+			throw new EmptyResultDataAccessException("Department with ID: " + id + " does not exist.", 1);
+		}
 	}
 
 }

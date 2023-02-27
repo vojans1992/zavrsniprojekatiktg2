@@ -7,5 +7,6 @@ public interface SubjectService {
 
 	SubjectEntity findById(Integer id);
 	SubjectEntity saveSubjectDtoAsSubjectEntity(SubjectDto subjectDto);
+	String deleteById(Integer id);
 	
 }

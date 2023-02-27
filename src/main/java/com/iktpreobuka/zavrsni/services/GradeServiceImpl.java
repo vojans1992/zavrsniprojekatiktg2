@@ -39,7 +39,11 @@ public class GradeServiceImpl implements GradeService {
 	public GradeEntity saveGradeDtoAsGradeEntity(GradeDto gradeDto) {
 		GradeEntity gradeEntity;
 		if(gradeDto.getId() != null) {
-			gradeEntity = gradeRepository.findById(gradeDto.getId()).get();
+			try {
+				gradeEntity = gradeRepository.findById(gradeDto.getId()).get();
+			} catch (NoSuchElementException e) {
+				throw new NoSuchElementException("Grade with ID: " + gradeDto.getId() + " does not exist.");
+			}
 		}else {
 			gradeEntity = new GradeEntity();
 		}

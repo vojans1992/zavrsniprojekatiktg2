@@ -3,6 +3,7 @@ package com.iktpreobuka.zavrsni.services;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.iktpreobuka.zavrsni.entities.SubjectEntity;
@@ -18,7 +19,11 @@ public class SubjectServiceImpl implements SubjectService {
 	public SubjectEntity saveSubjectDtoAsSubjectEntity(SubjectDto subjectDto) {
 		SubjectEntity subjectEntity;
 		if(subjectDto.getId() != null) {
-			subjectEntity = subjectRepository.findById(subjectDto.getId()).get();
+			try {
+				subjectEntity = subjectRepository.findById(subjectDto.getId()).get();
+			} catch (NoSuchElementException e) {
+				throw new NoSuchElementException("Subject with ID: " + subjectDto.getId() + " does not exist.");
+			}
 		}else {
 			subjectEntity = new SubjectEntity();
 		}
@@ -36,6 +41,16 @@ public class SubjectServiceImpl implements SubjectService {
 			return entity;
 		} catch (NoSuchElementException e) {
 			throw new NoSuchElementException("Subject with id: " + id + " does not exist.");
+		}
+	}
+	
+	@Override
+	public String deleteById(Integer id) {
+		try {
+			subjectRepository.deleteById(id);
+			return "Deleted subject with ID: " + id;
+		} catch (EmptyResultDataAccessException e) {
+			throw new EmptyResultDataAccessException("Subject with ID: " + id + " does not exist.", 1);
 		}
 	}
 

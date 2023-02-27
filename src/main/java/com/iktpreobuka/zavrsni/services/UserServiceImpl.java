@@ -31,7 +31,12 @@ public class UserServiceImpl implements UserService{
 	public UserEntity saveUserDtoAsUserEntity(UserDto userDto) {
 		UserEntity user;
 		if(userDto.getId() != null) {
-			user = userRepository.findById(userDto.getId()).get();
+			try {
+				user = userRepository.findById(userDto.getId()).get();
+			} catch (NoSuchElementException e) {
+				throw new NoSuchElementException("User with id: " + userDto.getId()+ " does not exist.");
+			}
+			
 		}else {
 			user = new UserEntity();
 		}

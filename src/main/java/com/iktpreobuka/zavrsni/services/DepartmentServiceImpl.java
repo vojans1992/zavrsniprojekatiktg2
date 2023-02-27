@@ -38,7 +38,11 @@ public class DepartmentServiceImpl implements DepartmentService{
 		DepartmentEntity departmentEntity;
 		
 		if(departmentDto.getId() != null) {
-			departmentEntity= departmentRepostitory.findById(departmentDto.getId()).get();
+			try {
+				departmentEntity= departmentRepostitory.findById(departmentDto.getId()).get();
+			} catch (NoSuchElementException e) {
+				throw new NoSuchElementException("Department with ID: " + departmentDto.getId() + " does not exist.");
+			}
 		}else {
 			departmentEntity = new DepartmentEntity();
 		}

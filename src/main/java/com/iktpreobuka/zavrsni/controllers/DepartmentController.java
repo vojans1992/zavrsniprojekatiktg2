@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -45,7 +46,13 @@ public class DepartmentController {
 
 	@RequestMapping("/{id}")
 	public ResponseEntity<?> one(@PathVariable int id) {
-		return new ResponseEntity<>(departmentService.findById(id), HttpStatus.OK);
+		try {
+			return new ResponseEntity<>(departmentService.findById(id), HttpStatus.OK);
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<RESTError>(new RESTError(HttpStatus.NOT_FOUND.value(),
+					e.getMessage()),
+					HttpStatus.NOT_FOUND);
+		}
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
@@ -69,9 +76,22 @@ public class DepartmentController {
 		return new ResponseEntity<>(department, HttpStatus.OK);
 	}
 	
+	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
+	public ResponseEntity<?> updateDepartment(@Valid @RequestBody DepartmentDto dto, @PathVariable int id){
+		dto.setId(id);
+		return addNewDepartment(dto);
+	}
+	
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deleteDepartment(@PathVariable int id) {
-		return new ResponseEntity<>(departmentService.deleteById(id), HttpStatus.OK);
+		try {
+			return new ResponseEntity<>(departmentService.deleteById(id), HttpStatus.OK);
+		} catch (EmptyResultDataAccessException e) {
+			return new ResponseEntity<RESTError>(new RESTError(HttpStatus.NOT_FOUND.value(),
+					e.getMessage()),
+					HttpStatus.NOT_FOUND);
+		}
+		
 	}
 	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)

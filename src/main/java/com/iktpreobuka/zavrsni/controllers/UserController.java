@@ -150,19 +150,19 @@ public class UserController {
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(ClassCastException.class)
-	public String handleClassCastExceptions(ClassCastException ex) {
-		return ex.getMessage();
+	public RESTError handleClassCastExceptions(ClassCastException ex) {
+		return new RESTError(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
 	}
 
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ExceptionHandler(NoSuchElementException.class)
-	public String handleNoSuchElementExceptions(NoSuchElementException ex) {
-		return ex.getMessage();
+	public RESTError handleNoSuchElementExceptions(NoSuchElementException ex) {
+		return new RESTError(HttpStatus.NOT_FOUND.value(), ex.getMessage());
 	}
 	
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ExceptionHandler(EmptyResultDataAccessException.class)
-	public String handleEmptyResultDataAccessExceptions(EmptyResultDataAccessException ex) {
-		return ex.getMessage();
+	public RESTError handleEmptyResultDataAccessExceptions(EmptyResultDataAccessException ex) {
+		return new RESTError(HttpStatus.NOT_FOUND.value(), ex.getMessage());
 	}
 }

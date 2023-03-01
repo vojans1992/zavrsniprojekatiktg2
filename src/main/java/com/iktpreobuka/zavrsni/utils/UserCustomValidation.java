@@ -22,24 +22,36 @@ public class UserCustomValidation implements Validator {
 	public void validate(Object target, Errors errors) {
 		if(target.getClass() == TeacherDto.class) {
 			TeacherDto teacher = (TeacherDto) target;
+			if(teacher.getPassword() == null || teacher.getConfirmedPassword() == null) {
+				return;
+			}
 			if (!teacher.getPassword().equals(teacher.getConfirmedPassword())) {
 				errors.reject("400", "Passwords must be the same");
 			}
 		}
 		if(target.getClass() == UserDto.class) {
 			UserDto user = (UserDto) target;
+			if(user.getPassword() == null || user.getConfirmedPassword() == null) {
+				return;
+			}
 			if (!user.getPassword().equals(user.getConfirmedPassword())) {
 				errors.reject("400", "Passwords must be the same");
 			}
 		}
 		if(target.getClass() == PupilDto.class) {
 			PupilDto pupil = (PupilDto) target;
+			if(pupil.getPassword() == null || pupil.getConfirmedPassword() == null) {
+				return;
+			}
 			if (!pupil.getPassword().equals(pupil.getConfirmedPassword())) {
 				errors.reject("400", "Passwords must be the same");
 			}
 		}
 		if(target.getClass() == ParentDto.class) {
 			ParentDto parent = (ParentDto) target;
+			if(parent.getPassword() == null || parent.getConfirmedPassword() == null) {
+				return;
+			}
 			if (!parent.getPassword().equals(parent.getConfirmedPassword())) {
 				errors.reject("400", "Passwords must be the same");
 			}

@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -36,16 +37,21 @@ public class SubjectController {
 	@Autowired
 	private SubjectRepository subjectRepository;
 	
+	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+	
 	@RequestMapping
 	public ResponseEntity<?> getAllSubjects(){
+		logger.info("GetAllSubjects invoked.");
 		return new ResponseEntity<List<SubjectEntity>>((List<SubjectEntity>) subjectRepository.findAll(),HttpStatus.OK);
 	}
 	
 	@RequestMapping("/{id}")
 	public ResponseEntity<?> one(@PathVariable int id) {
+		logger.info("one invoked.");
 		try {
 			return new ResponseEntity<>(subjectService.findById(id), HttpStatus.OK);
 		} catch (NoSuchElementException e) {
+			logger.error("Exception occured in method one, message: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(HttpStatus.NOT_FOUND.value(),
 					e.getMessage()),
 					HttpStatus.NOT_FOUND);
@@ -55,10 +61,12 @@ public class SubjectController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> addSubject(@Validated @RequestBody SubjectDto newSubject){
+		logger.info("addSubject invoked.");
 		SubjectEntity subjectEntity;
 		try {
 			subjectEntity = subjectService.saveSubjectDtoAsSubjectEntity(newSubject);
 		} catch (NoSuchElementException e) {
+			logger.error("Exception occured in method addSubject, message: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(HttpStatus.NOT_FOUND.value(),
 					e.getMessage()),
 					HttpStatus.NOT_FOUND);
@@ -68,15 +76,18 @@ public class SubjectController {
 	
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	public ResponseEntity<?> updateSubject(@Validated @RequestBody SubjectDto newSubject, @PathVariable int id){
+		logger.info("updateSubject invoked.");
 		newSubject.setId(id);
 		return addSubject(newSubject);
 	}
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deleteDepartment(@PathVariable int id) {
+	public ResponseEntity<?> deleteSubject(@PathVariable int id) {
+		logger.info("deleteSubject invoked.");
 		try {
 			return new ResponseEntity<>(subjectService.deleteById(id), HttpStatus.OK);
 		} catch (EmptyResultDataAccessException e) {
+			logger.error("Exception occured in method deleteSubject, message: " + e.getMessage());
 			return new ResponseEntity<RESTError>(new RESTError(HttpStatus.NOT_FOUND.value(),
 					e.getMessage()),
 					HttpStatus.NOT_FOUND);
@@ -86,6 +97,7 @@ public class SubjectController {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+		logger.info("handleValidationExceptions invoked.");
 		Map<String, String> errors = new HashMap<>();
 		ex.getBindingResult().getAllErrors().forEach((error) -> {
 			String fieldName = "";

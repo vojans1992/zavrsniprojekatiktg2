@@ -30,13 +30,11 @@ public class TeacherEntity extends UserEntity {
 	@JsonIgnore
 	@OneToMany(mappedBy = "teacher", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private List<GradeEntity> grades = new ArrayList<GradeEntity>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "teacher", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	private List<TeacherSubjectDepartmentEntity> teacherSubjectDepartments = new ArrayList<TeacherSubjectDepartmentEntity>();
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-	@JoinTable(
-			  name = "teacher_subject", 
-			  joinColumns = {@JoinColumn(name = "teacher_id", nullable = false, updatable = false)}, 
-			  inverseJoinColumns = { @JoinColumn(name = "subject_id", nullable = false, updatable = false)})
-	private Set<SubjectEntity> subjects = new HashSet<SubjectEntity>();
 
 	public TeacherEntity() {
 		super();
@@ -44,16 +42,15 @@ public class TeacherEntity extends UserEntity {
 	}
 
 	public TeacherEntity(Integer id, @NotNull String email, @NotNull String password, @NotNull String name,
-			@NotNull String lastName, @NotNull String username, @NotNull RoleEntity role) {
-		super(id, email, password, name, lastName, username, role);
+			@NotNull String lastName, @NotNull RoleEntity role) {
+		super(id, email, password, name, lastName, role);
 		// TODO Auto-generated constructor stub
 	}
 
-	public TeacherEntity(DepartmentEntity department, List<GradeEntity> grades, Set<SubjectEntity> subjects) {
+	public TeacherEntity(DepartmentEntity department, List<GradeEntity> grades) {
 		super();
 		this.department = department;
 		this.grades = grades;
-		this.subjects = subjects;
 	}
 
 	public DepartmentEntity getDepartment() {
@@ -72,12 +69,15 @@ public class TeacherEntity extends UserEntity {
 		this.grades = grades;
 	}
 
-	public Set<SubjectEntity> getSubjects() {
-		return subjects;
+
+	public List<TeacherSubjectDepartmentEntity> getTeacherSubjectDepartments() {
+		return teacherSubjectDepartments;
 	}
 
-	public void setSubjects(Set<SubjectEntity> subjects) {
-		this.subjects = subjects;
+	public void setTeacherSubjectDepartments(List<TeacherSubjectDepartmentEntity> teacherSubjectDepartments) {
+		this.teacherSubjectDepartments = teacherSubjectDepartments;
 	}
 
+	
+	
 }

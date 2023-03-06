@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 
 import com.iktpreobuka.zavrsni.entities.ParentEntity;
 import com.iktpreobuka.zavrsni.entities.RoleEntity;
-import com.iktpreobuka.zavrsni.entities.SubjectEntity;
 import com.iktpreobuka.zavrsni.entities.TeacherEntity;
 import com.iktpreobuka.zavrsni.entities.UserEntity;
 import com.iktpreobuka.zavrsni.entities.dto.ParentDto;
 import com.iktpreobuka.zavrsni.entities.dto.TeacherDto;
 import com.iktpreobuka.zavrsni.entities.dto.UserDto;
 import com.iktpreobuka.zavrsni.repositories.UserRepository;
+import com.iktpreobuka.zavrsni.utils.Encryption;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -24,8 +24,6 @@ public class UserServiceImpl implements UserService{
 	private UserRepository userRepository;
 	@Autowired
 	private RoleService roleService;
-	@Autowired
-	private SubjectService subjectService;
 	
 	@Override
 	public UserEntity saveUserDtoAsUserEntity(UserDto userDto) {
@@ -42,9 +40,8 @@ public class UserServiceImpl implements UserService{
 		}
 		user.setName(userDto.getName());
 		user.setLastName(userDto.getLastName());
-		user.setUsername(userDto.getUsername());
 		user.setEmail(userDto.getEmail());
-		user.setPassword(userDto.getPassword());
+		user.setPassword(Encryption.getPassEncoded(userDto.getPassword()));
 		
 		RoleEntity role;
 		try {
@@ -73,9 +70,8 @@ public class UserServiceImpl implements UserService{
 		
 		parent.setName(parentDto.getName());
 		parent.setLastName(parentDto.getLastName());
-		parent.setUsername(parentDto.getUsername());
 		parent.setEmail(parentDto.getEmail());
-		parent.setPassword(parentDto.getPassword());
+		parent.setPassword(Encryption.getPassEncoded(parentDto.getPassword()));
 		parent.setRole(roleService.findById(4));
 		
 		return userRepository.save(parent);
@@ -98,31 +94,13 @@ public class UserServiceImpl implements UserService{
 		
 		teacher.setName(teacherDto.getName());
 		teacher.setLastName(teacherDto.getLastName());
-		teacher.setUsername(teacherDto.getUsername());
 		teacher.setEmail(teacherDto.getEmail());
-		teacher.setPassword(teacherDto.getPassword());
+		teacher.setPassword(Encryption.getPassEncoded(teacherDto.getPassword()));
 		teacher.setRole(roleService.findById(2));
 		
 		return userRepository.save(teacher);
 	}
 
-	@Override
-	public String addSubjectToTeacher(int subjectId, int teacherId) {
-		TeacherEntity teacher = (TeacherEntity) findUserById(teacherId);
-		SubjectEntity subject = subjectService.findById(subjectId);
-		teacher.getSubjects().add(subject);
-		userRepository.save(teacher);
-		return teacher.getLastName() + " is now teaching " + subject.getName();
-	}
-	
-	@Override
-	public String removeSubjectFromTeacher(int subjectId, int teacherId) {
-		TeacherEntity teacher = (TeacherEntity) findUserById(teacherId);
-		SubjectEntity subject = subjectService.findById(subjectId);
-		teacher.getSubjects().remove(subject);
-		userRepository.save(teacher);
-		return teacher.getLastName() + " is no longer teaching " + subject.getName();
-	}
 
 	@Override
 	public UserEntity findUserById(Integer id) {
@@ -132,6 +110,17 @@ public class UserServiceImpl implements UserService{
 			return entity;
 		} catch (NoSuchElementException e) {
 			throw new NoSuchElementException("User with ID: " + id + " does not exist.");
+		}
+	}
+	
+	@Override
+	public UserEntity findUserByEmail(String email) {
+		UserEntity entity;
+		try {
+			entity = userRepository.findByEmail(email).get();
+			return entity;
+		} catch (NoSuchElementException e) {
+			throw new NoSuchElementException("User with email: " + email + " does not exist.");
 		}
 	}
 

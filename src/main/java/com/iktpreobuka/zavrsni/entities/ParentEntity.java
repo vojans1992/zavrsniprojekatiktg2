@@ -7,7 +7,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -17,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
 public class ParentEntity extends UserEntity{
 
+	
 	@JsonIgnore
 	@OneToMany(mappedBy = "parent", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private List<PupilEntity> children = new ArrayList<PupilEntity>();
@@ -27,8 +27,8 @@ public class ParentEntity extends UserEntity{
 	}
 
 	public ParentEntity(Integer id, @NotNull String email, @NotNull String password, @NotNull String name,
-			@NotNull String lastName, @NotNull String username, @NotNull RoleEntity role) {
-		super(id, email, password, name, lastName, username, role);
+			@NotNull String lastName, @NotNull RoleEntity role) {
+		super(id, email, password, name, lastName, role);
 		// TODO Auto-generated constructor stub
 	}
 

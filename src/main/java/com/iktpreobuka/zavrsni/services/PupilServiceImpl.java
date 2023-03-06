@@ -1,15 +1,19 @@
 package com.iktpreobuka.zavrsni.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.iktpreobuka.zavrsni.entities.DepartmentEntity;
+import com.iktpreobuka.zavrsni.entities.GradeEntity;
 import com.iktpreobuka.zavrsni.entities.ParentEntity;
 import com.iktpreobuka.zavrsni.entities.PupilEntity;
 import com.iktpreobuka.zavrsni.entities.dto.PupilDto;
 import com.iktpreobuka.zavrsni.repositories.PupilRepository;
+import com.iktpreobuka.zavrsni.utils.Encryption;
 @Service
 public class PupilServiceImpl implements PupilService{
 
@@ -39,9 +43,8 @@ public class PupilServiceImpl implements PupilService{
 		
 		pupil.setName(pupilDto.getName());
 		pupil.setLastName(pupilDto.getLastName());
-		pupil.setUsername(pupilDto.getUsername());
 		pupil.setEmail(pupilDto.getEmail());
-		pupil.setPassword(pupilDto.getPassword());
+		pupil.setPassword(Encryption.getPassEncoded(pupilDto.getPassword()));
 		pupil.setRole(roleService.findById(3));
 		
 		DepartmentEntity department;
@@ -72,7 +75,30 @@ public class PupilServiceImpl implements PupilService{
 			entity = pupilRepository.findById(id).get();
 			return entity;
 		} catch (NoSuchElementException e) {
-			throw new NoSuchElementException("Pupil with id: " + id + " does not exist.");
+			throw new NoSuchElementException("Pupil with ID: " + id + " does not exist.");
 		}
+	}
+	
+	@Override
+	public PupilEntity findByEmail(String email) {
+		PupilEntity entity;
+		try {
+			entity = pupilRepository.findByEmail(email).get();
+			return entity;
+		} catch (NoSuchElementException e) {
+			throw new NoSuchElementException("Pupil with email: " + email + " does not exist.");
+		}
+	}
+	
+	@Override
+	public List<GradeEntity> findGradesBySubject(String email, String subjectName) {
+		PupilEntity pupil = findByEmail(email);
+		List<GradeEntity> grades = new ArrayList<>();
+		for (GradeEntity gradeEntity : pupil.getGrades()) {
+			if(gradeEntity.getSubject().getName().equals(subjectName)) {
+				grades.add(gradeEntity);
+			}
+		}
+		return grades;
 	}
 }

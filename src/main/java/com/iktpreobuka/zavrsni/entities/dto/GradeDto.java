@@ -17,6 +17,9 @@ public class GradeDto {
 	@NotNull(message = "Grade must be connected to a semester.")
 	private Semester semester;
 	
+	@NotNull(message = "Grade must be given to a segment.")
+	private String segment;
+	
 	@NotNull(message = "Grade must be connected to a pupil.")
 	private Integer pupilId;
 	
@@ -77,6 +80,14 @@ public class GradeDto {
 
 	public void setSubjectId(Integer subjectId) {
 		this.subjectId = subjectId;
+	}
+
+	public String getSegment() {
+		return segment;
+	}
+
+	public void setSegment(String segment) {
+		this.segment = segment;
 	}
 	
 	

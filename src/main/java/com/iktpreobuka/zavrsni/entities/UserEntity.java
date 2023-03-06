@@ -19,17 +19,21 @@ import org.hibernate.validator.constraints.UniqueElements;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.iktpreobuka.zavrsni.security.Views;
 
 @Entity
 @Table(name = "user")
 @JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
 public class UserEntity {
 
+	@JsonView(Views.Admin.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "user_id")
 	private Integer id;
 	
+	@JsonView(Views.Private.class)
 	@NotNull(message = "Email must be provided")
 	@Pattern(regexp = "^((?!\\.)[\\w-_.]*[^.])(@\\w+)(\\.\\w+(\\.\\w+)?[^.\\W])$", message="Dto email is not valid.")
 	@Column(name = "email", nullable = false, unique = true)
@@ -40,20 +44,20 @@ public class UserEntity {
 	@Column(name = "password", nullable = false)
 	private String password;
 	
+	@JsonView(Views.Public.class)
 	@NotNull(message = "First name must be provided.")
 	@Size(min=2, max=30, message = "First name must be between {min} and {max} characters long.")
 	@Column(name = "name", nullable = false)
 	private String name;
 	
+	@JsonView(Views.Public.class)
 	@NotNull(message = "Last name must be provided.")
 	@Size(min=2, max=30, message = "Last name must be between {min} and {max} characters long.")
 	@Column(name = "last_name", nullable = false)
 	private String lastName;
 	
-	@NotNull(message = "Username name must be provided.")
-	@Column(name = "username", nullable = false, unique = true)
-	private String username;
 	
+	@JsonView(Views.Admin.class)
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "role", nullable = false)
@@ -64,14 +68,13 @@ public class UserEntity {
 	}
 
 	public UserEntity(Integer id, @NotNull String email, @NotNull String password, @NotNull String name,
-			@NotNull String lastName, @NotNull String username, @NotNull RoleEntity role) {
+			@NotNull String lastName, @NotNull RoleEntity role) {
 		super();
 		this.id = id;
 		this.email = email;
 		this.password = password;
 		this.name = name;
 		this.lastName = lastName;
-		this.username = username;
 		this.role = role;
 	}
 
@@ -115,13 +118,6 @@ public class UserEntity {
 		this.lastName = lastName;
 	}
 
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
 
 	public RoleEntity getRole() {
 		return role;

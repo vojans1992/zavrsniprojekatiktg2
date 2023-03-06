@@ -1,5 +1,7 @@
 package com.iktpreobuka.zavrsni.entities;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,33 +16,48 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.iktpreobuka.zavrsni.security.Views;
 
 @Entity
 @Table(name = "grade")
 @JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
 public class GradeEntity {
 	
+	@JsonView(Views.Admin.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "grade_id")
 	private Integer id;
+	@JsonView(Views.Public.class)
 	@Column(name = "value", columnDefinition = "integer default 0")
 	@Min(1)
 	@Max(5)
 	@NotNull
 	private Integer value;
+	@JsonView(Views.Public.class)
 	@NotNull(message = "Grade must be connected to a semester.")
 	@Column(name = "semester", nullable = false)
 	private Semester semester;
+	@JsonView(Views.Public.class)
+	@NotNull(message = "Grade must belong to a segment")
+	private String segment;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	@JsonView(Views.Public.class)
+	private Date date;
+	@JsonView(Views.Admin.class)
 	@NotNull(message = "Grade must be connected to a pupil.")
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn (name= "pupil", nullable = false)
 	private PupilEntity pupil;
+	@JsonView(Views.Public.class)
 	@NotNull(message = "Grade must be connected to a teacher.")
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn (name= "teacher", nullable = false)
 	private TeacherEntity teacher;
+	@JsonView(Views.Public.class)
 	@NotNull(message = "Grade must be connected to a subject.")
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn (name= "subject", nullable = false)
@@ -51,16 +68,6 @@ public class GradeEntity {
 		// TODO Auto-generated constructor stub
 	}
 
-	public GradeEntity(Integer id, @Min(1) @Max(5) @NotNull Integer value, @NotNull Semester semester,
-			@NotNull PupilEntity pupil, @NotNull TeacherEntity teacher, @NotNull SubjectEntity subject) {
-		super();
-		this.id = id;
-		this.value = value;
-		this.semester = semester;
-		this.pupil = pupil;
-		this.teacher = teacher;
-		this.subject = subject;
-	}
 
 	public Integer getId() {
 		return id;
@@ -109,8 +116,25 @@ public class GradeEntity {
 	public void setSubject(SubjectEntity subject) {
 		this.subject = subject;
 	}
-	
-	
-	
+
+
+	public String getSegment() {
+		return segment;
+	}
+
+
+	public void setSegment(String segment) {
+		this.segment = segment;
+	}
+
+
+	public Date getDate() {
+		return date;
+	}
+
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
 	
 }

@@ -15,29 +15,36 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.iktpreobuka.zavrsni.security.Views;
 
 @Entity
 @Table(name = "final_grade")
 @JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
 public class FinalGradeEntity {
 
+	@JsonView(Views.Admin.class)
 	@EmbeddedId
 	@Column(name = "final_grade_id")
 	private FinalGradeKey id = new FinalGradeKey();
 	
+	@JsonView(Views.Private.class)
 	@Column(name = "value", columnDefinition = "integer default 0")
 	private Integer value;
 	
+	@JsonView(Views.Private.class)
 	@NotNull(message = "Final grade must be connected to a semester.")
 	@Column(name = "semester", nullable = false)
 	private Semester semester;
 	
+	@JsonView(Views.Private.class)
 	@NotNull(message = "Final grade must be connected to a pupil.")
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@MapsId("pupilId")
 	@JoinColumn (name= "pupil_id", nullable = false)
 	private PupilEntity pupil;
 	
+	@JsonView(Views.Private.class)
 	@NotNull(message = "Final grade must be connected to a subject.")
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@MapsId("subjectId")

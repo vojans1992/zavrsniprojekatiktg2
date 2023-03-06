@@ -19,9 +19,6 @@ public class UserDto {
 	@NotNull(message = "Email must be provided")
 	@Pattern(regexp = "^((?!\\.)[\\w-_.]*[^.])(@\\w+)(\\.\\w+(\\.\\w+)?[^.\\W])$", message="Dto email is not valid.")
 	private String email;
-	@NotNull(message = "Username must be provided.")
-	@Size(min=5, max=15, message = "Username must be between {min} and {max} characters long.")
-	private String username;
 	@NotNull(message = "Password must be provided.")
 	@Size(min=5, max=10, message = "Password must be between {min} and {max} characters long.")
 	private String password;
@@ -72,14 +69,6 @@ public class UserDto {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
 	}
 
 	public String getPassword() {

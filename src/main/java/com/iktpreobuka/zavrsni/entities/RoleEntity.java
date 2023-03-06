@@ -16,16 +16,19 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.iktpreobuka.zavrsni.security.Views;
 
 @Entity
 @Table(name = "role")
 @JsonIgnoreProperties({ "handler", "hibernateLazyInitializer" })
 public class RoleEntity {
-
+	@JsonView(Views.Admin.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "role_id")
 	private Integer id;
+	@JsonView(Views.Public.class)
 	@Column(name = "role_name", unique = true, nullable = false)
 	@NotNull(message = "Role must have a name.")
 	private String name;

@@ -9,6 +9,8 @@ public class DepartmentDto {
 	
 	private Integer id;
 	private Year year;
+	@NotNull(message = "Department must have a name")
+	private String name;
 	@NotNull(message = "Homeroom teacher id must be provided")
 	private Integer homeroomTeacherId;
 	
@@ -39,6 +41,14 @@ public class DepartmentDto {
 
 	public void setHomeroomTeacherId(Integer homeroomTeacherId) {
 		this.homeroomTeacherId = homeroomTeacherId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	

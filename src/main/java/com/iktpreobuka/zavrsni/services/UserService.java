@@ -15,7 +15,6 @@ public interface UserService {
 	ParentEntity saveParentDtoAsParentEntity(ParentDto parentDto);
 	TeacherEntity saveTeacherDtoAsTeacherEntity(TeacherDto teacherDto);
 	UserEntity findUserById(Integer id);
-	String addSubjectToTeacher(int subjectId, int teacherId);
 	String deleteById(Integer id);
-	String removeSubjectFromTeacher(int subjectId, int teacherId);
+	UserEntity findUserByEmail(String email);
 }

@@ -21,22 +21,28 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.iktpreobuka.zavrsni.security.Views;
 
 @Entity
 @Table(name = "subject")
 @JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
 public class SubjectEntity {
 
+	@JsonView(Views.Admin.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "subject_id")
 	private Integer id;
+	@JsonView(Views.Public.class)
 	@NotNull(message = "Subject must have a name.")
 	@Column(name = "name", nullable = false)
 	private String name;
+	@JsonView(Views.Private.class)
 	@NotNull(message = "Subject must have weekly classload.")
 	@Column(name = "class_load", nullable = false)
 	private Integer classLoad;
+	@JsonView(Views.Private.class)
 	@NotNull(message = "Subject must have a school year it belongs to.")
 	@Column(name = "year", nullable = false)
 	private Year year;
@@ -47,8 +53,9 @@ public class SubjectEntity {
 	@OneToMany(mappedBy = "subject", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	private List<FinalGradeEntity> finalGrades = new ArrayList<FinalGradeEntity>();
 	@JsonIgnore
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, mappedBy = "subjects")
-	private Set<TeacherEntity> teachers = new HashSet<TeacherEntity>();
+	@OneToMany(mappedBy = "subject", cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+	private List<TeacherSubjectDepartmentEntity> teacherSubjectDepartments = new ArrayList<TeacherSubjectDepartmentEntity>();
+	
 	
 	public SubjectEntity() {
 		super();
@@ -56,7 +63,7 @@ public class SubjectEntity {
 	}
 
 	public SubjectEntity(Integer id, @NotNull String name, @NotNull Integer classLoad, @NotNull Year year,
-			List<GradeEntity> grades, List<FinalGradeEntity> finalGrades, Set<TeacherEntity> teachers) {
+			List<GradeEntity> grades, List<FinalGradeEntity> finalGrades) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -64,7 +71,6 @@ public class SubjectEntity {
 		this.year = year;
 		this.grades = grades;
 		this.finalGrades = finalGrades;
-		this.teachers = teachers;
 	}
 
 	public Integer getId() {
@@ -115,12 +121,13 @@ public class SubjectEntity {
 		this.finalGrades = finalGrades;
 	}
 
-	public Set<TeacherEntity> getTeachers() {
-		return teachers;
+
+	public List<TeacherSubjectDepartmentEntity> getTeacherSubjectDepartments() {
+		return teacherSubjectDepartments;
 	}
 
-	public void setTeachers(Set<TeacherEntity> teachers) {
-		this.teachers = teachers;
+	public void setTeacherSubjectDepartments(List<TeacherSubjectDepartmentEntity> teacherSubjectDepartments) {
+		this.teacherSubjectDepartments = teacherSubjectDepartments;
 	}
 	
 	

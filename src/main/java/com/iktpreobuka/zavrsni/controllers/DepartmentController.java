@@ -45,7 +45,7 @@ public class DepartmentController {
 	}
 
 	@RequestMapping("/{id}")
-	public ResponseEntity<?> one(@PathVariable int id) {
+	public ResponseEntity<?> getOne(@PathVariable int id) {
 		try {
 			return new ResponseEntity<>(departmentService.findById(id), HttpStatus.OK);
 		} catch (NoSuchElementException e) {

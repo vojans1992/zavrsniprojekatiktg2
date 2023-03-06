@@ -1,19 +1,23 @@
 package com.iktpreobuka.zavrsni.controllers;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import javax.crypto.SecretKey;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,20 +31,25 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import com.iktpreobuka.zavrsni.entities.ParentEntity;
-import com.iktpreobuka.zavrsni.entities.PupilEntity;
-import com.iktpreobuka.zavrsni.entities.TeacherEntity;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.iktpreobuka.zavrsni.entities.UserEntity;
+import com.iktpreobuka.zavrsni.entities.dto.LoginUserDto;
 import com.iktpreobuka.zavrsni.entities.dto.ParentDto;
 import com.iktpreobuka.zavrsni.entities.dto.PupilDto;
 import com.iktpreobuka.zavrsni.entities.dto.TeacherDto;
 import com.iktpreobuka.zavrsni.entities.dto.UserDto;
 import com.iktpreobuka.zavrsni.repositories.UserRepository;
+import com.iktpreobuka.zavrsni.security.Views;
 import com.iktpreobuka.zavrsni.services.PupilService;
 import com.iktpreobuka.zavrsni.services.UserService;
+import com.iktpreobuka.zavrsni.utils.Encryption;
 import com.iktpreobuka.zavrsni.utils.RESTError;
 import com.iktpreobuka.zavrsni.utils.UserCustomValidation;
+
+import io.jsonwebtoken.Jwts;
+
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -54,10 +63,40 @@ public class UserController {
 	private PupilService pupilService;
 	@Autowired
 	private UserCustomValidation userValidator;
+	@Value("${spring.security.token-duration}")
+	private Integer tokenDuration;
+	@Autowired
+	private SecretKey secretKey;
 
 	@InitBinder
 	protected void initBinder(final WebDataBinder binder) {
 		binder.addValidators(userValidator);
+	}
+	
+	@JsonView(Views.Public.class)
+	@RequestMapping(path = "login", method = RequestMethod.POST)
+	public ResponseEntity<?> login(@RequestParam("user") String email, @RequestParam("password") String pwd) {
+		UserEntity userEntity = userService.findUserByEmail(email);
+		//if (userEntity != null && Encryption.validatePassword(pwd, userEntity.getPassword())) {
+			String token = getJWTToken(userEntity);
+			LoginUserDto user = new LoginUserDto();
+			user.setUser(email);
+			user.setToken(token);
+			return new ResponseEntity<>(user, HttpStatus.OK);
+		//}
+		//return new ResponseEntity<>("Wrong credentials", HttpStatus.UNAUTHORIZED);
+	}
+	
+	private String getJWTToken(UserEntity userEntity) {
+		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+				.commaSeparatedStringToAuthorityList(userEntity.getRole().getName());
+		String token = Jwts.builder().setId("softtekJWT").setSubject(userEntity.getEmail())
+				.claim("authorities",
+						grantedAuthorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+				.setIssuedAt(new Date(System.currentTimeMillis()))
+				.setExpiration(new Date(System.currentTimeMillis() + this.tokenDuration)).signWith(this.secretKey)
+				.compact();
+		return "Bearer " + token;
 	}
 
 	@RequestMapping()
@@ -65,8 +104,9 @@ public class UserController {
 		return new ResponseEntity<List<UserEntity>>((List<UserEntity>) userRepository.findAll(), HttpStatus.OK);
 	}
 
+	@JsonView(Views.Public.class)
 	@RequestMapping("/{id}")
-	public ResponseEntity<?> one(@PathVariable int id) {
+	public ResponseEntity<?> getOne(@PathVariable int id) {
 		return new ResponseEntity<>(userService.findUserById(id), HttpStatus.OK);
 	}
 
@@ -119,15 +159,18 @@ public class UserController {
 		return new ResponseEntity<>(userService.deleteById(id), HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/teachers/addSubject", method = RequestMethod.POST)
-	public ResponseEntity<?> addSubjectToTeacher(@RequestParam int subjectId, @RequestParam int teacherId) {
-		return new ResponseEntity<>(userService.addSubjectToTeacher(subjectId, teacherId), HttpStatus.OK);
-	}
 	
-	@RequestMapping(value = "/teachers/removeSubject", method = RequestMethod.DELETE)
-	public ResponseEntity<?> removeSubjectFromTeacher(@RequestParam int subjectId, @RequestParam int teacherId) {
-		return new ResponseEntity<>(userService.removeSubjectFromTeacher(subjectId, teacherId), HttpStatus.OK);
-	}
+//	private String getJWTToken(UserEntity userEntity) {
+//		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+//		.commaSeparatedStringToAuthorityList(userEntity.getRole().getName());
+//		String token = Jwts.builder().setId("softtekJWT").setSubject(userEntity.getEmail())
+//		.claim("authorities", grantedAuthorities.stream()
+//		.map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+//		.setIssuedAt(new Date(System.currentTimeMillis()))
+//		.setExpiration(new Date(System.currentTimeMillis() + this.tokenDuration))
+//		.signWith(this.secretKey).compact();
+//		return "Bearer " + token;
+//		}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
@@ -164,5 +207,17 @@ public class UserController {
 	@ExceptionHandler(EmptyResultDataAccessException.class)
 	public RESTError handleEmptyResultDataAccessExceptions(EmptyResultDataAccessException ex) {
 		return new RESTError(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+	}
+	
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+	public RESTError handleClassCastExceptions(SQLIntegrityConstraintViolationException ex) {
+		return new RESTError(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+	}
+	
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public RESTError handleClassCastExceptions(MethodArgumentTypeMismatchException ex) {
+		return new RESTError(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
 	}
 }

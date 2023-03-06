@@ -16,14 +16,18 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.iktpreobuka.zavrsni.security.Views;
 
 @Entity
 @JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
 public class PupilEntity extends UserEntity{
+	@JsonView(Views.Public.class)
 	@NotNull(message = "Pupil must belong to a department.")
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn (name= "department", nullable = false)
 	private DepartmentEntity department;
+	@JsonView(Views.Private.class)
 	@NotNull(message = "Pupil must have a parent.")
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn (name= "parent", nullable = false)
@@ -41,8 +45,8 @@ public class PupilEntity extends UserEntity{
 	}
 
 	public PupilEntity(Integer id, @NotNull String email, @NotNull String password, @NotNull String name,
-			@NotNull String lastName, @NotNull String username, @NotNull RoleEntity role) {
-		super(id, email, password, name, lastName, username, role);
+			@NotNull String lastName, @NotNull RoleEntity role) {
+		super(id, email, password, name, lastName, role);
 		// TODO Auto-generated constructor stub
 	}
 

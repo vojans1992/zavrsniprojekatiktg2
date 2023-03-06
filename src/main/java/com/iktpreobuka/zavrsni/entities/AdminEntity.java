@@ -16,8 +16,8 @@ public class AdminEntity extends UserEntity {
 	}
 
 	public AdminEntity(Integer id, @NotNull String email, @NotNull String password, @NotNull String name,
-			@NotNull String lastName, @NotNull String username, @NotNull RoleEntity role) {
-		super(id, email, password, name, lastName, username, role);
+			@NotNull String lastName, @NotNull RoleEntity role) {
+		super(id, email, password, name, lastName, role);
 		// TODO Auto-generated constructor stub
 	}
 

@@ -41,9 +41,11 @@ public class PupilController {
 		return new ResponseEntity<>(pupilService.findGradesBySubject(authenticationFacade.getAuthentication().getName(),subjectName), HttpStatus.OK);
 	}
 	
-	@ResponseStatus(HttpStatus.NOT_FOUND)
-	@ExceptionHandler(NoSuchElementException.class)
-	public RESTError handleNoSuchElementExceptions(NoSuchElementException ex) {
-		return new RESTError(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+	@Secured("ROLE_PUPIL")
+	@JsonView(Views.Public.class)
+	@RequestMapping("/finalGrades")
+	public ResponseEntity<?> finalGrades(){
+		return new ResponseEntity<>(pupilService.findByEmail(authenticationFacade.getAuthentication().getName()).getFinalGrades(), HttpStatus.OK);
 	}
+	
 }

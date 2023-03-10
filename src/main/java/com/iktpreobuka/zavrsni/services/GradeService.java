@@ -7,6 +7,6 @@ import com.iktpreobuka.zavrsni.entities.dto.GradeDto;
 public interface GradeService {
 
 	GradeEntity findById(Integer id);
-	GradeEntity saveGradeDtoAsGradeEntity(GradeDto gradeDto);
-	String deleteById(int id);
+	GradeEntity saveGradeDtoAsGradeEntity(GradeDto gradeDto, String teacherEmail);
+	String deleteById(int id, String teacherEmail);
 }

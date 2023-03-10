@@ -1,5 +1,6 @@
 package com.iktpreobuka.zavrsni.services;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +69,7 @@ public class TeacherSubjectDepartmentServiceImpl implements TeacherSubjectDepart
 			entity = teacherSubjectDepartmentRepository.findById(key).get();
 			return entity;
 		} catch (NoSuchElementException e) {
-			throw new NoSuchElementException("Grade with id: " + key + " does not exist.");
+			throw new NoSuchElementException("TSD with id: " + key + " does not exist.");
 		}
 		
 	}
@@ -78,5 +79,10 @@ public class TeacherSubjectDepartmentServiceImpl implements TeacherSubjectDepart
 		TeacherSubjectDepartmentEntity entity = findById(teacherId, subjectId, departmentId);
 		teacherSubjectDepartmentRepository.delete(entity);
 		return entity;
+	}
+	
+	@Override
+	public List<TeacherSubjectDepartmentEntity> getAllForTeacher(int teacherId){
+		return teacherSubjectDepartmentRepository.findByTeacherId(teacherId);
 	}
 }

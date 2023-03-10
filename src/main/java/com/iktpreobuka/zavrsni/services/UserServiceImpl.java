@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.iktpreobuka.zavrsni.entities.GradeEntity;
 import com.iktpreobuka.zavrsni.entities.ParentEntity;
+import com.iktpreobuka.zavrsni.entities.PupilEntity;
 import com.iktpreobuka.zavrsni.entities.RoleEntity;
 import com.iktpreobuka.zavrsni.entities.TeacherEntity;
 import com.iktpreobuka.zavrsni.entities.UserEntity;
@@ -42,14 +44,7 @@ public class UserServiceImpl implements UserService{
 		user.setLastName(userDto.getLastName());
 		user.setEmail(userDto.getEmail());
 		user.setPassword(Encryption.getPassEncoded(userDto.getPassword()));
-		
-		RoleEntity role;
-		try {
-			role = roleService.findById(userDto.getRoleId());
-			user.setRole(role);
-		} catch (NoSuchElementException e) {
-			throw new NoSuchElementException(e.getMessage());
-		}
+		user.setRole(roleService.findById(1));
 		return userRepository.save(user);
 	}
 
@@ -126,13 +121,13 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public String deleteById(Integer id) {
+		
 		try {
 			userRepository.deleteById(id);
 			return "Deleted user with ID: " + id;
 		} catch (EmptyResultDataAccessException e) {
 			throw new EmptyResultDataAccessException("User with ID: " + id + " does not exist.", 1);
 		}
-		
 	}
 	
 }

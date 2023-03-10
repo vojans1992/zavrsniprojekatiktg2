@@ -16,6 +16,7 @@ import com.iktpreobuka.zavrsni.entities.dto.EmailDto;
 import com.iktpreobuka.zavrsni.entities.dto.GradeDto;
 import com.iktpreobuka.zavrsni.repositories.GradeRepository;
 import com.iktpreobuka.zavrsni.utils.CustomDataBindingException;
+import com.iktpreobuka.zavrsni.utils.CustomException;
 
 @Service
 public class GradeServiceImpl implements GradeService {
@@ -45,7 +46,7 @@ public class GradeServiceImpl implements GradeService {
 	}
 
 	@Override
-	public GradeEntity saveGradeDtoAsGradeEntity(GradeDto gradeDto) {
+	public GradeEntity saveGradeDtoAsGradeEntity(GradeDto gradeDto, String teacherEmail) {
 		GradeEntity gradeEntity;
 		if(gradeDto.getId() != null) {
 			try {
@@ -80,10 +81,10 @@ public class GradeServiceImpl implements GradeService {
 		
 		TeacherEntity teacher;
 		try {
-			teacher = (TeacherEntity) userService.findUserById(gradeDto.getTeacherId());
+			teacher = (TeacherEntity) userService.findUserByEmail(teacherEmail);
 			gradeEntity.setTeacher(teacher);
 		} catch (ClassCastException e) {
-			throw new ClassCastException("User with ID: " + gradeDto.getTeacherId() + " is not a teacher entity.");
+			throw new ClassCastException("User with email: " + teacherEmail + " is not a teacher entity.");
 		}catch (NoSuchElementException e) {
 			throw new NoSuchElementException(e.getMessage());
 		}
@@ -97,14 +98,19 @@ public class GradeServiceImpl implements GradeService {
 		}
 		
 		String msg = "Dear " + pupil.getParent().getLastName() + " your child " + pupil.getName() 
-		+ " has recieved a " + gradeEntity.getValue() + " for his " + gradeEntity.getSegment() + " from " + subject.getName();
+		+ " has recieved a " + gradeEntity.getValue() + " for " + gradeEntity.getSegment() + " from " + subject.getName();
 		emailService.sendSimpleMessage(new EmailDto(pupil.getParent().getEmail(), "Grade announcement", msg));
 		
 		return gradeRepository.save(gradeEntity);
 	}
 
 	@Override
-	public String deleteById(int id) {
+	public String deleteById(int id, String teacherEmail) {
+		GradeEntity grade = findById(id);
+		TeacherEntity teacher = (TeacherEntity) userService.findUserByEmail(teacherEmail);
+		if(grade.getTeacher() != teacher) {
+			throw new CustomException(teacherEmail + " is not allowed to delete grade " + grade.getId() + " since they are not the one that created it.");
+		}
 		try {
 			gradeRepository.deleteById(id);
 			return "Deleted grade with ID: " + id;

@@ -14,8 +14,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -27,7 +25,7 @@ import com.iktpreobuka.zavrsni.security.Views;
 @JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
 public class UserEntity {
 
-	@JsonView(Views.Admin.class)
+	@JsonView(Views.Private.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "user_id")

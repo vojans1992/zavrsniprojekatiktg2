@@ -26,7 +26,7 @@ import com.iktpreobuka.zavrsni.security.Views;
 @JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
 public class GradeEntity {
 	
-	@JsonView(Views.Admin.class)
+	@JsonView(Views.Private.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "grade_id")

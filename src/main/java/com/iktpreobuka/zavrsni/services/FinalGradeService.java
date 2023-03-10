@@ -1,10 +1,8 @@
 package com.iktpreobuka.zavrsni.services;
 
-import com.iktpreobuka.zavrsni.entities.FinalGradeEntity;
 import com.iktpreobuka.zavrsni.entities.dto.FinalGradeDto;
 
 public interface FinalGradeService {
 
-	FinalGradeEntity findById(Integer id);
-	String saveFinalGradeDtoAsFinalGradeEntity(FinalGradeDto finalGradeDto);
+	String saveFinalGradeDtoAsFinalGradeEntity(FinalGradeDto finalGradeDto, String userEmail);
 }

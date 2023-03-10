@@ -5,9 +5,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
@@ -28,11 +25,11 @@ public class FinalGradeEntity {
 	@Column(name = "final_grade_id")
 	private FinalGradeKey id = new FinalGradeKey();
 	
-	@JsonView(Views.Private.class)
+	@JsonView(Views.Public.class)
 	@Column(name = "value", columnDefinition = "integer default 0")
 	private Integer value;
 	
-	@JsonView(Views.Private.class)
+	@JsonView(Views.Public.class)
 	@NotNull(message = "Final grade must be connected to a semester.")
 	@Column(name = "semester", nullable = false)
 	private Semester semester;
@@ -44,7 +41,7 @@ public class FinalGradeEntity {
 	@JoinColumn (name= "pupil_id", nullable = false)
 	private PupilEntity pupil;
 	
-	@JsonView(Views.Private.class)
+	@JsonView(Views.Public.class)
 	@NotNull(message = "Final grade must be connected to a subject.")
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@MapsId("subjectId")

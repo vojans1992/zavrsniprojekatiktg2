@@ -5,25 +5,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.iktpreobuka.zavrsni.services.AdminService;
-import com.iktpreobuka.zavrsni.services.UserService;
 
 @RestController
 @RequestMapping("api/v1/admin")
 public class AdminController {
 	
-	@Autowired
-	private AdminService adminService;
-	
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(method=RequestMethod.GET, value="/download")
 	public ResponseEntity<ByteArrayResource>  downloadFile() throws IOException {
 

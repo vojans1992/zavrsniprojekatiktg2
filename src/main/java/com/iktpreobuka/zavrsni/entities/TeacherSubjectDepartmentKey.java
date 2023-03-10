@@ -5,15 +5,21 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.iktpreobuka.zavrsni.security.Views;
+
 @Embeddable
 public class TeacherSubjectDepartmentKey implements Serializable{
 
+	@JsonView(Views.Admin.class)
 	@Column(name = "teacher_id")
 	private Integer teacherId;
 	
+	@JsonView(Views.Admin.class)
 	@Column(name = "subject_id")
 	private Integer subjectId;
 	
+	@JsonView(Views.Admin.class)
 	@Column(name = "department_id")
 	private Integer departmentId;
 

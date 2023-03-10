@@ -23,8 +23,6 @@ public class GradeDto {
 	@NotNull(message = "Grade must be connected to a pupil.")
 	private Integer pupilId;
 	
-	@NotNull(message = "Grade must be connected to a teacher.")
-	private Integer teacherId;
 	
 	@NotNull(message = "Grade must be connected to a subject.")
 	private Integer subjectId;
@@ -66,13 +64,6 @@ public class GradeDto {
 		this.pupilId = pupilId;
 	}
 
-	public Integer getTeacherId() {
-		return teacherId;
-	}
-
-	public void setTeacherId(Integer teacherId) {
-		this.teacherId = teacherId;
-	}
 
 	public Integer getSubjectId() {
 		return subjectId;

@@ -8,8 +8,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,11 +29,13 @@ public class EmailController {
 	@Autowired
 	private EmailService emailService;
 	
+	@Secured("ROLE_ADMIN")
 	@RequestMapping(method = RequestMethod.POST, value = "/simple")
 	public ResponseEntity<?> sendEmail(@Valid @RequestBody EmailDto emailDto){
 		emailService.sendSimpleMessage(emailDto);
 		return new ResponseEntity<>("Email sent.",HttpStatus.OK);
 	}
+	
 	
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)

@@ -1,11 +1,9 @@
 package com.iktpreobuka.zavrsni.entities.dto;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.iktpreobuka.zavrsni.entities.RoleEntity;
 
 public class UserDto {
 
@@ -25,8 +23,6 @@ public class UserDto {
 	@NotNull(message = "Password must be provided.")
 	@Size(min=5, max=10, message = "Confirmed Password must be between {min} and {max} characters long.")
 	private String confirmedPassword;
-	@NotNull(message = "Role must be provided.")
-	private Integer roleId;
 	
 	public UserDto() {
 		super();
@@ -87,13 +83,4 @@ public class UserDto {
 		this.confirmedPassword = confirmedPassword;
 	}
 
-	public Integer getRoleId() {
-		return roleId;
-	}
-
-	public void setRoleId(Integer roleId) {
-		this.roleId = roleId;
-	}
-
-	
 }

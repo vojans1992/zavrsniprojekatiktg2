@@ -1,8 +1,13 @@
 package com.iktpreobuka.zavrsni.utils;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.iktpreobuka.zavrsni.security.Views;
+
 public class RESTError {
 
+	@JsonView(Views.Public.class)
 	private int code;
+	@JsonView(Views.Public.class)
 	private String message;
 
 	public RESTError(int code, String message) {

@@ -1,9 +1,7 @@
 package com.iktpreobuka.zavrsni.services;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.NoSuchElementException;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -53,7 +51,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 		if (departmentDto.getYear() == null) {
 			departmentEntity.setYear(Year.FIRST_YEAR);
 		} else {
-			departmentEntity.setYear(departmentDto.getYear());
+			departmentEntity.setYear(Year.values()[departmentDto.getYear()]);
 		}
 
 		TeacherEntity homeroomTeacher;

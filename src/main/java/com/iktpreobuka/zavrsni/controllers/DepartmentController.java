@@ -1,6 +1,5 @@
 package com.iktpreobuka.zavrsni.controllers;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,9 +24,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.iktpreobuka.zavrsni.entities.DepartmentEntity;
 import com.iktpreobuka.zavrsni.entities.dto.DepartmentDto;
 import com.iktpreobuka.zavrsni.repositories.DepartmentRepository;
+import com.iktpreobuka.zavrsni.security.Views;
 import com.iktpreobuka.zavrsni.services.DepartmentService;
 import com.iktpreobuka.zavrsni.utils.RESTError;
 
@@ -44,6 +46,8 @@ public class DepartmentController {
 		return new ResponseEntity<List<DepartmentEntity>>((List<DepartmentEntity>) departmentRepository.findAll(),HttpStatus.OK);
 	}
 
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping("/{id}")
 	public ResponseEntity<?> getOne(@PathVariable int id) {
 		try {
@@ -55,6 +59,8 @@ public class DepartmentController {
 		}
 	}
 	
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> addNewDepartment(@Valid @RequestBody DepartmentDto newDepartment){
 		DepartmentEntity department;
@@ -76,12 +82,16 @@ public class DepartmentController {
 		return new ResponseEntity<>(department, HttpStatus.OK);
 	}
 	
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	public ResponseEntity<?> updateDepartment(@Valid @RequestBody DepartmentDto dto, @PathVariable int id){
 		dto.setId(id);
 		return addNewDepartment(dto);
 	}
 	
+	@Secured("ROLE_ADMIN")
+	@JsonView(Views.Admin.class)
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deleteDepartment(@PathVariable int id) {
 		try {

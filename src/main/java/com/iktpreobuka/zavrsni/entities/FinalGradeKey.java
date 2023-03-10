@@ -5,12 +5,17 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.iktpreobuka.zavrsni.security.Views;
+
 @Embeddable
 public class FinalGradeKey implements Serializable{
 
+	@JsonView(Views.Admin.class)
 	@Column(name = "pupil_id")
 	private Integer pupilId;
 	
+	@JsonView(Views.Admin.class)
 	@Column(name = "subject_id")
 	private Integer subjectId;
 

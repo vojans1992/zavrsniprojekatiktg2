@@ -15,6 +15,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +34,7 @@ import com.iktpreobuka.zavrsni.utils.RESTError;
 
 @RestController
 @RequestMapping(value = "api/v1/subjects")
+@CrossOrigin(origins = "http://localhost:3000")
 public class SubjectController {
 
 	@Autowired

@@ -38,7 +38,7 @@ public class UserEntity {
 	private String email;
 	
 	@NotNull(message = "Password must be provided.")
-	@JsonIgnore
+	@JsonView(Views.Admin.class)
 	@Column(name = "password", nullable = false)
 	private String password;
 	

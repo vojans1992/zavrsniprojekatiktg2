@@ -23,6 +23,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,6 +55,7 @@ import io.jsonwebtoken.Jwts;
 
 @RestController
 @RequestMapping("api/v1/users")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
 	@Autowired

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,7 @@ import com.iktpreobuka.zavrsni.services.UserService;
 
 @RestController
 @RequestMapping("api/v1/teachers")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TeacherController {
 	
 	@Autowired
@@ -73,5 +75,19 @@ public class TeacherController {
 	@RequestMapping("/allSubjects")
 	public ResponseEntity<?> mySubjects(){
 		return new ResponseEntity<>(teacherService.getSubjects(authenticationFacade.getAuthentication().getName()),HttpStatus.OK);
+	}
+	
+	@Secured("ROLE_TEACHER")
+	@JsonView(Views.Private.class)
+	@RequestMapping("/allPupils")
+	public ResponseEntity<?> myPupils(){
+		return new ResponseEntity<>(teacherService.getPupils(authenticationFacade.getAuthentication().getName()),HttpStatus.OK);
+	}
+	
+	@Secured("ROLE_TEACHER")
+	@JsonView(Views.Private.class)
+	@RequestMapping("/allDepartmentsAndSubjects")
+	public ResponseEntity<?> myDepartmentsAndSubjects(){
+		return new ResponseEntity<>(teacherService.getDepartmentsAndSubjects(authenticationFacade.getAuthentication().getName()),HttpStatus.OK);
 	}
 }

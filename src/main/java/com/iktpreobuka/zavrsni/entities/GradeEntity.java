@@ -47,7 +47,7 @@ public class GradeEntity {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@JsonView(Views.Public.class)
 	private Date date;
-	@JsonView(Views.Admin.class)
+	@JsonView(Views.Public.class)
 	@NotNull(message = "Grade must be connected to a pupil.")
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinColumn (name= "pupil", nullable = false)

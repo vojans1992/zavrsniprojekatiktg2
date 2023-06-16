@@ -9,6 +9,10 @@ public class LoginUserDto {
 	private String user;
 	@JsonView(Views.Public.class)
 	private String token;
+	@JsonView(Views.Public.class)
+	private String role;
+	@JsonView(Views.Public.class)
+	private String name;
 
 	public String getUser() {
 		return user;
@@ -25,4 +29,22 @@ public class LoginUserDto {
 	public void setToken(String token) {
 		this.token = token;
 	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
 }

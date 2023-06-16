@@ -15,6 +15,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +37,7 @@ import com.iktpreobuka.zavrsni.utils.RESTError;
 
 @RestController
 @RequestMapping("api/v1/grades")
+@CrossOrigin(origins = "http://localhost:3000")
 public class GradeController {
 
 	@Autowired
@@ -52,7 +54,7 @@ public class GradeController {
 		return new ResponseEntity<List<GradeEntity>>((List<GradeEntity>) gradeRepository.findAll(), HttpStatus.OK);
 	}
 
-	@Secured("ROLE_ADMIN")
+	@Secured({"ROLE_ADMIN", "ROLE_TEACHER"})
 	@JsonView(Views.Admin.class)
 	@RequestMapping("/{id}")
 	public ResponseEntity<?> getOne(@PathVariable int id) {
@@ -73,7 +75,7 @@ public class GradeController {
 		return new ResponseEntity<>(grade, HttpStatus.OK);
 	}
 
-	@Secured("ROLE_TEACHER")
+	@Secured({"ROLE_TEACHER", "ROLE_ADMIN"})
 	@JsonView(Views.Private.class)
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateGrade(@Valid @RequestBody GradeDto newGrade, @PathVariable int id) {
@@ -81,7 +83,7 @@ public class GradeController {
 		return addNewGrade(newGrade);
 	}
 
-	@Secured("ROLE_TEACHER")
+	@Secured({"ROLE_TEACHER", "ROLE_ADMIN"})
 	@JsonView(Views.Private.class)
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public ResponseEntity<?> deleteGrade(@PathVariable int id) {

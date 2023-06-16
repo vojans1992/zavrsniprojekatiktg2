@@ -1,5 +1,6 @@
 package com.iktpreobuka.zavrsni.services;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.iktpreobuka.zavrsni.entities.DepartmentEntity;
@@ -22,5 +23,9 @@ public interface TeacherService {
 	List<DepartmentEntity> getDepartments(String email);
 
 	List<SubjectEntity> getSubjects(String email);
+
+	List<PupilEntity> getPupils(String email);
+
+	HashMap<Integer, List<SubjectEntity>> getDepartmentsAndSubjects(String email);
 
 }

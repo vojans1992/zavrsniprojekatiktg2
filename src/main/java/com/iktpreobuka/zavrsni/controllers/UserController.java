@@ -85,6 +85,8 @@ public class UserController {
 			LoginUserDto user = new LoginUserDto();
 			user.setUser(email);
 			user.setToken(token);
+			user.setRole(userEntity.getRole().getName());
+			user.setName(userEntity.getName());
 			return new ResponseEntity<>(user, HttpStatus.OK);
 		}
 		return new ResponseEntity<>("Wrong credentials", HttpStatus.UNAUTHORIZED);
